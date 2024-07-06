@@ -1,8 +1,7 @@
 export function response_400(res, message){
     return res.status(400).json({
         status:'error',
-        error: message,
-        message: "Bad Request",
+        message: message,
     })
 }
 
