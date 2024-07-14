@@ -114,3 +114,56 @@ export const saveChanges = async (req, res) => {
         return response_400(res, error.message);    
     }
 }
+
+export const fetchAddress = async (req, res) => {
+    try {
+        const {id} = req.body;
+        const user = await User.findOne({email: id});
+        if(!user){
+            return response_400(res, "User Not Found");
+        }
+        const result = user.address;
+        return response_200(res, "Found Successfully", {result})
+    }
+    catch(error){
+        console.log("Error At Fetch Address " + error);
+        return response_400(res, error);  
+    }
+}
+
+export const addAddress = async (req, res) => {
+    try {
+        const {id, details} = req.body;
+        if(details.name == "" || details.phone == "" || details.flat == "" || details.area == "" || details.city == "" || details.state == ""){
+            return response_400(res, "Enter All Fields")
+        }
+        const user = await User.findOne({email: id});
+        if(!user){
+            return response_400(res, "User Not Found");
+        }
+        user.address.push(details);
+        await user.save();
+        return response_200(res, "Saved Successfully")
+    }
+    catch(error){
+        console.log("Error At Add Address " + error);
+        return response_400(res, error);    
+    }
+}
+
+export const removeAddress = async (req, res) => {
+    try {
+        const {idx, id} = req.body;
+        const user = await User.findOne({email: id});
+        if(!user){
+            return response_400(res, "User Not Found");
+        }
+        user.address.splice(idx, 1);
+        await user.save();
+        return response_200(res, "Removed Successfully")
+    }
+    catch(error){
+        console.log("Error At Remove Address " + error);
+        return response_400(res, error);   
+    }
+}
