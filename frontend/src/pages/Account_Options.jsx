@@ -9,8 +9,8 @@ function Account_Options() {
                 <p className='text-4xl'>Your Account</p>
             </div>
             <div className='h-[80%] w-[80%] grid grid-cols-3 border-b-[1px] border-[#d5d9d9]'>
-                <Link>
-                  <div className='h-[60%] w-[80%] flex rounded-lg border-[1px] border-[#d5d9d9]
+                <Link className='h-[60%] w-[80%]'>
+                  <div className='h-full w-full flex rounded-lg border-[1px] border-[#d5d9d9]
                   hover:bg-[#e6e6e6]'>
                     <div className='h-full w-[40%] rounded-l-lg flex justify-center items-center'>
                       <i className="fa-solid fa-gift text-5xl text-[#0ca8e1]"></i>
@@ -21,8 +21,8 @@ function Account_Options() {
                     </div>
                   </div>
                 </Link>
-                <Link to='/login_security'>
-                  <div className='h-[60%] w-[80%] flex rounded-lg border-[1px] border-[#d5d9d9]
+                <Link to='/login_security' className='h-[60%] w-[80%]'>
+                  <div className='h-full w-full flex rounded-lg border-[1px] border-[#d5d9d9]
                   hover:bg-[#e6e6e6]'>
                     <div className='h-full w-[40%] rounded-l-lg flex justify-center items-center'>
                       <i className="fa-solid fa-shield-halved text-5xl text-[#4f4dbb]"></i>
@@ -33,8 +33,8 @@ function Account_Options() {
                     </div>
                   </div>
                 </Link>
-                <Link>
-                  <div className='h-[60%] w-[80%] flex rounded-lg border-[1px] border-[#d5d9d9]
+                <Link to='/address' className='h-[60%] w-[80%]'>
+                  <div className='h-full w-full flex rounded-lg border-[1px] border-[#d5d9d9]
                   hover:bg-[#e6e6e6]'>
                     <div className='h-full w-[40%] rounded-l-lg flex justify-center items-center'>
                       <i className="fa-solid fa-location-dot text-5xl text-[#f7971f]"></i>
@@ -45,8 +45,8 @@ function Account_Options() {
                     </div>
                   </div>
                 </Link>
-                <Link>
-                  <div className='h-[60%] w-[80%] flex rounded-lg border-[1px] border-[#d5d9d9]
+                <Link className='h-[60%] w-[80%]'>
+                  <div className='h-full w-full flex rounded-lg border-[1px] border-[#d5d9d9]
                   hover:bg-[#e6e6e6]'>
                     <div className='h-full w-[40%] rounded-l-lg flex justify-center items-center'>
                       <i className="fa-solid fa-wallet text-5xl text-[#1e90bc]"></i>
@@ -57,8 +57,8 @@ function Account_Options() {
                     </div>
                   </div>
                 </Link>
-                <Link>
-                  <div className='h-[60%] w-[80%] flex rounded-lg border-[1px] border-[#d5d9d9]
+                <Link className='h-[60%] w-[80%]'>
+                  <div className='h-full w-full flex rounded-lg border-[1px] border-[#d5d9d9]
                   hover:bg-[#e6e6e6]'>
                     <div className='h-full w-[40%] rounded-l-lg flex justify-center items-center'>
                       <i className="fa-solid fa-phone-volume text-5xl text-[#00464f]"></i>

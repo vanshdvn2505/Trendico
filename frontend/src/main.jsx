@@ -13,6 +13,11 @@ import Login from './pages/Signup'
 import Account_Options from './pages/Account_Options'
 import Layout1 from '../Layout1'
 import Login_Security from './pages/Login_Security'
+import Search_Results from './pages/Search_Results'
+import Open_Product from './pages/Open_Product'
+import Cart from './pages/Cart'
+import Address from './pages/Address'
+import Add_Address from './components/Add_Address'
 const persistor = persistStore(store)
 
 const router = createBrowserRouter(
@@ -24,6 +29,11 @@ const router = createBrowserRouter(
         <Route path='/home' element = {<Home />} />
         <Route path='/account_options' element = {<Account_Options />} />
         <Route path='/login_security' element = {<Login_Security />} />
+        <Route path='/address' element = {<Address />} />
+        <Route path='/add_address' element= {<Add_Address/>} />
+        <Route path='/search_results' element = {<Search_Results />} />
+        <Route path='/open_product/:id' element = {<Open_Product />} />
+        <Route path='/cart' element = {<Cart />} />
       </Route>  
       <Route path='/signup' element = {<Login />} />
       <Route path='/signin' element = {<Signin />} />

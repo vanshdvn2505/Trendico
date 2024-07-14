@@ -1,23 +1,30 @@
 import React, { useEffect, useState } from 'react'
+import axios from 'axios'
+import Carousel from '../components/Carousel'
 import "../fonts/SourceSansPro.ttf"
+import { useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import {setAuth} from '../features/auth/authSlice'
-import Carousel from '../components/Carousel'
-import axios from 'axios'
+import { setSearch } from '../features/search/searchSlice'
+import {setProduct} from '../features/product/productSlice'
+import {setOpenProd} from '../features/openProd/openProdSlice'
 
 
 function Home() {
 
   const dispatch = useDispatch();
   const auth = useSelector(state => state.auth.value)
+  const search = useSelector(state => state.search.value);
+  const product = useSelector(state => state.product.value);
+  const openProd = useSelector(state => state.openProd.value);
   const [panel1, setPanel1] = useState([]);
   const [panel2, setPanel2] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPanels = async () => {
       try {
         const response = await axios.get('http://localhost:7000/product/panels');
-        console.log(response.data);
         setPanel1(response.data.data.prod1);
         setPanel2(response.data.data.prod2);
       }
@@ -28,6 +35,39 @@ function Home() {
     }
     fetchPanels();
   }, [])
+
+  const searchProduct = async (input) => {
+    try {
+        dispatch(setSearch(input))
+        dispatch(setProduct(null))
+        if(input == ""){
+            navigate('/home');
+            return;
+        }
+        const response = await axios.post('http://localhost:7000/product/search', {input});
+        console.log(response.data);
+        dispatch(setProduct(response.data.data.products))
+        navigate('/search_results');
+    }
+    catch(error){
+        console.log("Error At Search Product " + error);    
+        alert("Something Went Wrong !!")
+    }
+  }
+
+  const openProduct = (prod) => {
+    try {
+        dispatch(setOpenProd(prod));
+        const newWindow = window.open('http://localhost:5173/open_product/' + prod._id, '_blank')
+        if(newWindow){
+            newWindow.focus();
+        }
+    }
+    catch(error){
+        console.log("Error At Open Product " + error);    
+        alert("Something Went Wrong !!")
+    }
+  }
   
   // const [help, setHelp] = useState(true);
   // useEffect(() => {
@@ -48,18 +88,23 @@ function Home() {
   return (
     <div className='min-h-[90vh] h-auto w-full mt-[10vh] flex flex-col bg-[#e3e6e6]'>
         <div className='h-[7vh] w-full flex justify-start items-center bg-[#232f3e]'>
-            <button className='h-full w-[10%] ml-[2%] hover:border-[1px] hover:border-white text-white font-semibold'>All Categories</button>
-            <button className='h-full w-[10%] hover:border-[1px] hover:border-white text-white font-semibold'>Furniture</button>
-            <button className='h-full w-[10%] hover:border-[1px] hover:border-white text-white font-semibold'>Smartphones</button>
-            <button className='h-full w-[10%] hover:border-[1px] hover:border-white text-white font-semibold'>Shoes</button>
-            <button className='h-full w-[10%] hover:border-[1px] hover:border-white text-white font-semibold'>Beauty</button>
+            <button className='h-full w-[10%] ml-[2%] hover:border-[1px] hover:border-white text-white font-semibold'
+            onClick={() => searchProduct("Trendonic")}>All Categories</button>
+            <button className='h-full w-[10%] hover:border-[1px] hover:border-white text-white font-semibold'
+            onClick={() => searchProduct("Furniture")}>Furniture</button>
+            <button className='h-full w-[10%] hover:border-[1px] hover:border-white text-white font-semibold'
+            onClick={() => searchProduct("Smartphones")}>Smartphones</button>
+            <button className='h-full w-[10%] hover:border-[1px] hover:border-white text-white font-semibold'
+            onClick={() => searchProduct("Shoes")}>Shoes</button>
+            <button className='h-full w-[10%] hover:border-[1px] hover:border-white text-white font-semibold'
+            onClick={() => searchProduct("Beauty")}>Beauty</button>
         </div>
-        <div className='h-[40vh] w-full relative bg-emerald-300 flex'>
+        <div className='h-[40vh] w-full relative flex'>
             <Carousel />
         </div>
         <div className='h-[200vh] w-full flex flex-col justify-evenly items-center z-10'>
             <div className='h-[60vh] w-full mb-10 grid grid-cols-3'>
-                <div className='h-[95%] w-[90%] mt-3 ml-5 flex flex-col justify-center items-center bg-white'>
+                <div className='h-[95%] w-[90%] rounded-xl mt-3 ml-5 flex flex-col justify-center items-center bg-white'>
                     <div className='h-[20%] w-full flex justify-start items-center '>
                         <p className='text-3xl ml-[3%] font-bold'>Bestsellers In Beauty</p>
                     </div>
@@ -77,10 +122,11 @@ function Home() {
                         </div>
                     </div>
                     <div className='h-[10%] w-[100%] flex justify-start items-center'>
-                        <button className='h-[70%] w-[20%] ml-3 text-[#007185]'>See more</button>
+                        <button className='h-[70%] w-[20%] ml-3 text-[#007185]'
+                        onClick={() => searchProduct("Beauty")}>See more</button>
                     </div>
                 </div>
-                <div className='h-[95%] w-[90%] mt-3 ml-5 bg-white'>
+                <div className='h-[95%] w-[90%] rounded-xl mt-3 ml-5 bg-white'>
                     <div className='h-[20%] w-full flex justify-start items-center '>
                         <p className='text-3xl ml-[3%] font-bold'>Upto 60% Off | Footwear</p>
                     </div>
@@ -98,65 +144,73 @@ function Home() {
                         </div>
                     </div>
                     <div className='h-[10%] w-[100%] flex justify-start items-center'>
-                        <button className='h-[70%] w-[20%] ml-3 text-[#007185]'>See more</button>
+                        <button className='h-[70%] w-[20%] ml-3 text-[#007185]'
+                         onClick={() => searchProduct("Shoes")}>See more</button>
                     </div>
                 </div>
-                <div className='h-[95%] w-[90%] mt-3 ml-5 bg-white'>
+                <div className='h-[95%] w-[90%] rounded-xl mt-3 ml-5 bg-white'>
                     <div className='h-[20%] w-full flex justify-start items-center '>
                         <p className='text-3xl ml-[3%] font-bold'>Upto 60% Off | Footwear</p>
                     </div>
                     <div className='h-[70%] w-[90%] flex justify-evenly items-center '>
                         <div className='h-[100%] w-[45%] flex flex-col justify-evenly items-center'>
-                              <button className='h-[47%] w-full flex flex-col justify-evenly items-start'>
+                              <button className='h-[47%] w-full flex flex-col justify-evenly items-start'
+                              onClick={() => searchProduct("Furniture")}>
                                   <img className='h-[87%] w-full' src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1isSyBfA6Xu8QHDL3I0Mq2_Tl8JFJKLcdfw&s" alt="Loading..." />
                                   <p className='text-[#007185]'>Furniture</p>
                               </button>
-                              <button className='h-[47%] w-full flex flex-col justify-evenly items-start'>
+                              <button className='h-[47%] w-full flex flex-col justify-evenly items-start'
+                              onClick={() => searchProduct("Groceries")}>
                                   <img className='h-[87%] w-full' src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSl5q9Q5HNYsQSJd9quJoCInBJ6fiGt-wvSXg&s" alt="Loading..." />
                                   <p className='text-[#007185]'>Groceries</p>
                               </button>
                         </div>
                         <div className='h-[100%] w-[45%] flex flex-col justify-evenly items-center'>
-                              <button className='h-[47%] w-full flex flex-col justify-evenly items-start'>
+                              <button className='h-[47%] w-full flex flex-col justify-evenly items-start'
+                              onClick={() => searchProduct("Clothing")}>
                                   <img className='h-[87%] w-full' src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTFNGLPrPpgtNgiZDV0gHOET-nvNqWHuew5EQ&s" alt="Loading..." />
                                   <p className='text-[#007185]'>Fashion</p>
                               </button>
-                              <button className='h-[47%] w-full flex flex-col justify-evenly items-start'>
+                              <button className='h-[47%] w-full flex flex-col justify-evenly items-start'
+                              onClick={() => searchProduct("Motorcycles")}>
                                   <img className='h-[87%] w-full' src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEMJ3fsIKfHQA4MlqvjkQY6JNUd5e12z7NEg&s" alt="Loading..." />
                                   <p className='text-[#007185]'>Motorcycles</p>
                               </button>
                         </div>
                     </div>
                     <div className='h-[10%] w-[100%] flex justify-start items-center'>
-                        <button className='h-[70%] w-[20%] ml-3 text-[#007185]'>Explore All</button>
+                        <button className='h-[70%] w-[20%] ml-3 text-[#007185]'
+                         >Explore All</button>
                     </div>
                 </div>
             </div>
-            <div className='h-[50vh] w-[95%] flex flex-col justify-center items-center bg-white'>
+            <div className='h-[50vh] w-[95%] rounded-xl flex flex-col justify-center items-center bg-white'>
                 <div className='h-[20%] w-full flex justify-start items-center '>
                     <p className='text-2xl ml-[2%] font-bold'>Some More Items To Explore</p>
                 </div>
                 <div className='h-[80%] w-[95%] flex justify-evenly items-center overflow-x-auto'>
-                    {panel1.map(i => (
-                      <div key={i._id} className='h-[90%] w-[25%] flex-shrink-0 mx-3 bg-[#e3e6e6]'>
+                    {panel1.map(product => (
+                      <button key={product._id} className='h-[90%] w-[25%] flex-shrink-0 mx-3 bg-[#e3e6e6]'
+                      onClick={() => openProduct(product)}>
                           <div className='h-full w-full'>
-                            <img className='h-full w-full bg-cover' src={i.images[0]} alt="Loading..."/>
+                            <img className='h-full w-full bg-cover' src={product.images[0]} alt="Loading..."/>
                           </div>
-                      </div>
+                      </button>
                     ))}
                 </div>
             </div>
-            <div className='h-[50vh] w-[95%] flex flex-col justify-center items-center bg-white'>
+            <div className='h-[50vh] w-[95%] rounded-xl flex flex-col justify-center items-center bg-white'>
                 <div className='h-[20%] w-full flex justify-start items-center '>
                     <p className='text-2xl ml-[2%] font-bold'>Bestsellers In Laptops</p>
                 </div>
                 <div className='h-[80%] w-[95%] flex justify-evenly items-center overflow-x-auto'>
                     {panel2.map(i => (
-                      <div key={i._id} className='h-[90%] w-[25%] flex-shrink-0 mx-3 bg-[#e3e6e6]'>
+                      <button key={i._id} className='h-[90%] w-[25%] flex-shrink-0 mx-3 bg-[#e3e6e6]'
+                      onClick={() => openProduct(i)}>
                           <div className='h-full w-full'>
                             <img className='h-full w-full bg-cover' src={i.images[0]} alt="Loading..."/>
                           </div>
-                      </div>
+                      </button>
                     ))}
                 </div>
             </div>
