@@ -37,6 +37,10 @@ const userSchema = new mongoose.Schema({
         type: Array,
     },
 
+    wallet: {
+        type: Number
+    },
+
     cart: {
         type: [Object],
     },

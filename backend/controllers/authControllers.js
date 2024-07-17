@@ -33,7 +33,7 @@ async function generateToken(res, user){
             },
             process.env.JWT_KEY,
             {
-                expiresIn: "1d",
+                expiresIn: "7d",
             }
         );
         res.cookie("token", token, {

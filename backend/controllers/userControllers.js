@@ -167,3 +167,60 @@ export const removeAddress = async (req, res) => {
         return response_400(res, error);   
     }
 }
+
+export const placeOrder = async (req, res) => {
+    try {
+        const {auth, selected, payMethod, selectedAddress} = req.body;
+        const email = auth.email;
+        const user = await User.findOne({email: email});
+        if(!user){
+            return response_400(res, "User Not Found");
+        }   
+        const address = user.address[selectedAddress];
+        const totalAmt = selected.reduce((total, item) => total + (item.price*83.48.toFixed(2)), 0).toFixed(2);
+        const discount = selected.reduce((total, item) => total + ((item.discountPercentage*item.price*83.48.toFixed(2))/100), 0).toFixed(2);
+        const finalAmt = totalAmt - discount;
+        const order = {
+            Buyer: email,
+            payMethod: payMethod,
+            products: selected,
+            address: address,
+            totalAmt: totalAmt,
+            discount: discount,
+            finalAmt: finalAmt,
+        }
+        if(payMethod == "Trendonic Wallet"){
+            if(finalAmt > user.wallet){
+                return response_400(res, "Not Enough Balance");
+            }
+            user.wallet -= finalAmt;
+        }
+        user.order.push(order);
+
+        const selectedIds = selected.map(item => item._id);
+        user.cart = user.cart.filter(cartItem => !selectedIds.includes(cartItem._id.toString()));
+
+        await user.save();
+        return response_200(res, "Order Placed Successfully");
+    }
+    catch(error){
+        console.log("Error At Place Order " + error);
+        response_400(res, error);    
+    }
+}
+
+export const fetchOrders = async (req, res) => {
+    try {
+        const {id} = req.body;
+        const user = await User.findOne({email: id});
+        if(!user){
+            return response_400(res, "User Not Found");
+        }
+        const orders = user.order;
+        return response_200(res, "Found Successfully", {orders});
+    }
+    catch(error){
+        console.log("Error At Fetch Orders " + error);
+        response_400(res, error);    
+    }
+}
