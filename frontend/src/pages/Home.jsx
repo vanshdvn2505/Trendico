@@ -24,7 +24,7 @@ function Home() {
   useEffect(() => {
     const fetchPanels = async () => {
       try {
-        const response = await axios.get('http://localhost:7000/product/panels');
+        const response = await axios.get('http://localhost:7000/product/panels', { withCredentials: true });
         setPanel1(response.data.data.prod1);
         setPanel2(response.data.data.prod2);
       }
@@ -44,7 +44,7 @@ function Home() {
             navigate('/home');
             return;
         }
-        const response = await axios.post('http://localhost:7000/product/search', {input});
+        const response = await axios.post('http://localhost:7000/product/search', {input}, { withCredentials: true });
         console.log(response.data);
         dispatch(setProduct(response.data.data.products))
         navigate('/search_results');

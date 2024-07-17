@@ -32,7 +32,7 @@ function Header() {
                 navigate('/home');
                 return;
             }
-            const response = await axios.post('http://localhost:7000/product/search', {input});
+            const response = await axios.post('http://localhost:7000/product/search', {input}, { withCredentials: true });
             console.log(response.data);
             if(response.data.data){
                 dispatch(setProduct(response.data.data.products))
@@ -47,7 +47,7 @@ function Header() {
 
     const signoutUser = async () => {
         try {
-            const response = await axios.post("http://localhost:7000/auth/signout", {auth});
+            const response = await axios.post("http://localhost:7000/auth/signout", {auth}, { withCredentials: true });
             console.log(response.data);
             dispatch(setAuth(null));
             setLog(false);
@@ -112,7 +112,7 @@ function Header() {
                     <p className='text-white font-bold'>Accounts & Lists</p>
                 </button>
             </Link>
-            <Link>
+            <Link to={auth == null ? '/signin' : '/yourOrders'}>
                 <button className='h-[9vh] w-[15vh] hover:border-[1px] border-white flex flex-col justify-center items-start'>
                     <p className='text-white'>Returns</p>
                     <p className='text-white font-bold'>& Orders</p>

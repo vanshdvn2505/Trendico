@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom';
 import { setSearch } from '../features/search/searchSlice'
 import {setProduct} from '../features/product/productSlice'
+import { addItem, removeItem, clearCart} from '../features/cart/cartSlice';
 import axios from 'axios'
 
 
@@ -12,6 +13,7 @@ function Open_Product() {
   const dispatch = useDispatch();
   const openProd = useSelector(state => state.openProd.value);
   const auth = useSelector(state => state.auth.value)
+  const selected = useSelector(state => state.cart.selected)
   const [openedProduct, setOpenedProduct] = useState(openProd);
   const [selectImg, setImg] = useState(openProd.images[0]);
   const [panel, setPanel] = useState([]);
@@ -20,7 +22,7 @@ function Open_Product() {
   useEffect(() => {
     const fetchSimilar = async (input) => {
       try {
-        const response = await axios.post('http://localhost:7000/product/similar', {input});
+        const response = await axios.post('http://localhost:7000/product/similar', {input}, { withCredentials: true });
         setPanel(response.data.data.prod);
       }
       catch(error){
@@ -39,7 +41,7 @@ function Open_Product() {
             navigate('/home');
             return;
         }
-        const response = await axios.post('http://localhost:7000/product/search', {input});
+        const response = await axios.post('http://localhost:7000/product/search', {input}, { withCredentials: true });
         console.log(response.data);
         dispatch(setProduct(response.data.data.products))
         navigate('/search_results');
@@ -109,6 +111,18 @@ function Open_Product() {
     )
   }
 
+  const buyNow = async (item) => {
+    try {
+      dispatch(clearCart());
+      dispatch(addItem(item));
+      navigate('/placeOrder')
+    }
+    catch(error){
+      console.log("Error At Buy Now " + error);
+      alert(error.message);  
+    }
+  }
+
   return (
     <div className='min-h-[90vh] h-auto w-full mt-[10vh] flex flex-col'>
          <div className='h-[7vh] w-full flex justify-start items-center bg-[#232f3e]'>
@@ -142,7 +156,8 @@ function Open_Product() {
                         onClick={() => addToCart(openedProduct._id)}>
                           Add To Cart
                         </button>
-                        <button className='w-[80%] h-[45%] rounded-full bg-[#ffa41c]'>
+                        <button className='w-[80%] h-[45%] rounded-full bg-[#ffa41c]'
+                        onClick={() => buyNow(openedProduct)}>
                           Buy Now
                         </button>
                     </div>

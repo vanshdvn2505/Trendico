@@ -37,7 +37,7 @@ function Search_Results() {
         navigate('/signin');
         return;
       }
-      const response = await axios.post('http://localhost:7000/product/addToCart', {id, userId});
+      const response = await axios.post('http://localhost:7000/product/addToCart', {id, userId}, { withCredentials: true });
       alert(response.data.message);
     }
     catch(error){

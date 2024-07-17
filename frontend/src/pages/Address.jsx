@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { setSearch } from '../features/search/searchSlice'
 import {setProduct} from '../features/product/productSlice'
 import axios from 'axios';
+axios.defaults.withCredentials = true;
 
 function Address() {
 
@@ -15,7 +16,7 @@ function Address() {
     const fetchAddress = async () => {
         try {
             const id = auth.email;
-            const response = await axios.post('http://localhost:7000/user/fetchAddress', {id});
+            const response = await axios.post('http://localhost:7000/user/fetchAddress', {id}, { withCredentials: true });
             setAddress(response.data.data.result)
         }
         catch(error){
@@ -32,7 +33,7 @@ function Address() {
                 navigate('/home');
                 return;
             }
-            const response = await axios.post('http://localhost:7000/product/search', {input});
+            const response = await axios.post('http://localhost:7000/product/search', {input}, { withCredentials: true });
             dispatch(setProduct(response.data.data.products))
             navigate('/search_results');
         }
@@ -40,12 +41,12 @@ function Address() {
             console.log("Error At Search Product " + error);    
             alert("Something Went Wrong !!")
         }
-      }
+    }
 
       const removeAddress = async (idx) => {
         try {
             const id = auth.email;
-            const response = await axios.post('http://localhost:7000/user/removeAddress', {id, idx});
+            const response = await axios.post('http://localhost:7000/user/removeAddress', {id, idx}, { withCredentials: true });
             alert(response.data.message)
             location.reload()
         }

@@ -18,6 +18,8 @@ import Open_Product from './pages/Open_Product'
 import Cart from './pages/Cart'
 import Address from './pages/Address'
 import Add_Address from './components/Add_Address'
+import PlaceOrder from './pages/PlaceOrder'
+import YourOrders from './pages/YourOrders'
 const persistor = persistStore(store)
 
 const router = createBrowserRouter(
@@ -34,6 +36,8 @@ const router = createBrowserRouter(
         <Route path='/search_results' element = {<Search_Results />} />
         <Route path='/open_product/:id' element = {<Open_Product />} />
         <Route path='/cart' element = {<Cart />} />
+        <Route path='/placeOrder' element = {<PlaceOrder />} />
+        <Route path='/yourOrders' element = {<YourOrders />} />
       </Route>  
       <Route path='/signup' element = {<Login />} />
       <Route path='/signin' element = {<Signin />} />
